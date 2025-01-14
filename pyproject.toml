@@ -1,0 +1,22 @@
+[build-system]
+requires      = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+source           = "vcs"
+fallback-version = "0.0.0"
+
+[tool.hatch.build.hooks.vcs]
+version-file = "burndown/_version.py"
+
+[project]
+name = "burndown"
+authors = [{name = "je-cook"}]
+dynamic = ['version']
+dependencies = [
+    "dash",
+    "pandas",
+    "plotly",
+    "waitress"
+]
+requires-python = ">=3.10"

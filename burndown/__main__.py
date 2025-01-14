@@ -5,8 +5,15 @@ from datetime import datetime
 import pandas as pd
 from dash import Dash, Input, Output, State, dash_table, dcc, html
 
-from figures import figure1, figure2, figure3, figure4, figure5, figure6, figure7
-from graphql_api import fetch_github_data
+from burndown.figures import (
+    figure1,
+    figure2,
+    figure3,
+    figure4,
+    figure5,
+    figure6,
+    figure7,
+)
 
 # Configure the app
 app = Dash(__name__)
@@ -162,9 +169,9 @@ if __name__ == "__main__":
     DEBUG = args.debug
 
     if args.rest:
-        from rest_api import fetch_github_data
+        from burndown.rest_api import fetch_github_data
     else:
-        from graphql_api import fetch_github_data
+        from burndown.graphql_api import fetch_github_data
 
     try:
         from waitress import serve
@@ -174,4 +181,5 @@ if __name__ == "__main__":
     if DEBUG:
         app.run_server(debug=DEBUG)
     else:
+        print("address: http://127.0.0.1:8050")
         serve(app.server, host="0.0.0.0", port=8050)
