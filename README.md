@@ -10,3 +10,4 @@ serve with:
 ```
 python -m burndown
 ```
+You should supply a github personal access token when running. It will allow faster access to the github api.
