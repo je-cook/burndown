@@ -8,5 +8,9 @@ pip install .
 
 serve with:
 ```
+burndown
+
+# or
+
 python -m burndown
 ```
