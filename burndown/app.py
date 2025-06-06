@@ -1,5 +1,4 @@
 from argparse import ArgumentParser
-import sys
 from datetime import datetime
 
 import pandas as pd
@@ -13,6 +12,7 @@ from burndown.figures import (
     figure5,
     figure6,
     figure7,
+    figure8,
 )
 
 try:
@@ -110,9 +110,7 @@ class BurndownApp:
                     id="loading",
                     type="circle",  # You can also use "default" or "square"
                     children=[
-                        dcc.Store(
-                            id="github-data"
-                        ),  # Store for caching the fetched data
+                        dcc.Store(id="github-data"),
                         dcc.Tabs(
                             id="tabs",
                             value="plots-tab",
@@ -143,10 +141,7 @@ class BurndownApp:
             Input("token", "value"),
         )
         def update_data(
-            n_clicks: int,
-            current_n_clicks: int,
-            orgrepo: str,
-            token: str,
+            n_clicks: int, current_n_clicks: int, orgrepo: str, token: str
         ) -> tuple[str, int]:
             if n_clicks == 0 or orgrepo == "" or "/" not in orgrepo:
                 return None, 0
@@ -184,7 +179,10 @@ class BurndownApp:
             if tab == "p6":
                 return dcc.Graph(figure=figure6(df))
             if tab == "p7":
-                return dcc.Graph(figure=figure7(df))
+                return html.Div([
+                    html.Button("Switch to Daily", id="toggle-button", n_clicks=0),
+                    dcc.Graph(id="bar-chart"),
+                ])
             if tab == "table-tab":
                 # Data Table
                 return dash_table.DataTable(
@@ -195,5 +193,14 @@ class BurndownApp:
                     style_cell={"textAlign": "left"},
                 )
             return []
+
+        @app.callback(
+            Output("bar-chart", "figure"),
+            Input("toggle-button", "n_clicks"),
+            State("github-data", "data"),
+        )
+        def update_graph(n_clicks, data):
+            df = pd.DataFrame(data)
+            return figure8(df) if n_clicks % 2 == 0 else figure7(df)
 
         return app

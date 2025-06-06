@@ -153,7 +153,7 @@ def figure5(df):
         title="Binned distribution of time taken to complete issues",
     )
     fig5.update_layout(
-        xaxis={"rangeslider": {"visible": True}, "autorange": True},
+        xaxis={"rangeslider": {"visible": False}, "autorange": True},
         yaxis={"autorange": True, "fixedrange": False},
     )
     return fig5
@@ -216,3 +216,25 @@ def figure7(df):
         yaxis={"autorange": True, "fixedrange": False},
     )
     return fig7
+
+
+def figure8(df):
+    df["Week"] = (
+        pd.to_datetime(df["end_date"], format="mixed")
+        .dt.tz_localize(None)
+        .dt.to_period("W")
+        .apply(lambda r: r.start_time)
+    )
+
+    stats = (
+        df[df["Week"] < pd.to_datetime(datetime.now().date()).to_period("W").start_time]
+        .groupby("Week")
+        .size()
+        .reset_index(name="Count")
+    )
+    fig8 = px.bar(stats, x="Week", y="Count", title="Issues closed per week")
+    fig8.update_layout(
+        xaxis={"rangeslider": {"visible": True}, "autorange": True},
+        yaxis={"autorange": True, "fixedrange": False},
+    )
+    return fig8
